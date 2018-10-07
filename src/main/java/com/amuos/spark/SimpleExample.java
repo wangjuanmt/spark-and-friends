@@ -1,4 +1,4 @@
-package com.amuos.spark.example;
+package com.amuos.spark;
 
 
 import org.apache.spark.sql.Dataset;

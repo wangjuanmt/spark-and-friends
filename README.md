@@ -32,22 +32,55 @@ for example:
 After this, in http://localhost:8080, there will be one work in Workers.
 
 #### start a job
-See com.amuos.spark.example.SimpleExample for what does the job do.
+See SimpleExample for what does the job do.
 
 Run SimpleExample in Intellij or by ./bin/spark-submit
 ``````
 # Under SparkAndFriends project directory.
 $ mvn package
 $ /Library/spark-2.3.1-bin-hadoop2.7/bin/spark-submit \
-  --class "com.amuos.spark.example.SimpleExample" \
+  --class "SimpleExample" \
   --master local \
   target/spark-and-friends-1.0-SNAPSHOT.jar
 
 ``````
 
-Tips-1: Before starting a job, you must have a master and at least one worker. Or else your job can not start and you will see the error of "WARN TaskSchedulerImpl: Initial job has not accepted any resources; check your cluster UI to ensure that workers are registered and have sufficient resources".
+Tips-1: Before starting a job, you must have a master and at least one worker.
+Or else your job can not start and you will see the error of
+"WARN TaskSchedulerImpl: Initial job has not accepted any resources; check your cluster UI to ensure that workers are registered and have sufficient resources".
 
-Tips-2: Must set `SparkSession.config("spark.jars", "target/spark-and-friends-1.0-SNAPSHOT.jar")` when using lambda  to make sure intellij can run SimpleExample. Refer to https://stackoverflow.com/questions/39953245/how-to-fix-java-lang-classcastexception-cannot-assign-instance-of-scala-collect.
+Tips-2: Must set `SparkSession.config("spark.jars", "target/spark-and-friends-1.0-SNAPSHOT.jar")` when using lambda  to make sure intellij can run SimpleExample.
+Refer to https://stackoverflow.com/questions/39953245/how-to-fix-java-lang-classcastexception-cannot-assign-instance-of-scala-collect.
+
+Tips-3: Must have a toolchains.xml under ~/.m2, or else you can not build maven package.
+
+The Toolchains Plugins allows to share configuration across plugins.
+For example to make sure the plugins like compiler, surefire, javadoc, webstart etc. all use the same JDK for execution.
+Similarly to maven-enforcer-plugin, it allows to control environmental constraints in the build.
+
+This toolchains.xml example:
+``````
+<?xml version="1.0" encoding="UTF8"?>
+<toolchains>
+    <toolchain>
+        <type>jdk</type>
+        <provides>
+            <version>1.8</version>
+        </provides>
+        <configuration>
+            <jdkHome>/your-jdk8-home</jdkHome>
+        </configuration>
+    </toolchain>
+</toolchains>
+``````
+
+Tips-4: Must set serialVersionUID, as `private static final long serialVersionUID = 1L;` value to avoid java.io.InvalidClassException :
+``````
+java.io.InvalidClassException; local class incompatible: stream classdesc serialVersionUID = abc, local class serialVersionUID = -xyz
+``````
+
+
+
 
 #### Other Commands
 
